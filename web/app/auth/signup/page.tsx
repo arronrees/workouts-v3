@@ -8,8 +8,16 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/auth';
 
 export default async function SignUp() {
+  const session = await getSession();
+
+  if (session) {
+    redirect('/dashboard');
+  }
+
   return (
     <Card className='max-w-lg mx-auto'>
       <CardHeader>

@@ -4,6 +4,7 @@ import './globals.css';
 import ProgressBarProvider from '@/components/layout/ProgressBarProvider';
 import React from 'react';
 import { Toaster } from 'sonner';
+import Header from '@/components/layout/Header';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <ProgressBarProvider>
+          <Header />
           <div className='p-6 text-sm bg-slate-50 min-h-screen'>
             <main>{children}</main>
           </div>

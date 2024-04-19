@@ -1,7 +1,7 @@
 'use server';
 
 import { JWT_SECRET, api } from '@/constants';
-import { JsonApiResponse } from '@/constants.types';
+import { JsonApiResponse, Session } from '@/constants.types';
 import { SignJWT, jwtVerify } from 'jose';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -27,9 +27,10 @@ export async function decrypt(input: string): Promise<any> {
 export async function logout() {
   // Destroy the session
   cookies().set('session', '', { expires: new Date(0) });
+  revalidatePath('/', 'layout');
 }
 
-export async function getSession() {
+export async function getSession(): Promise<Session | null> {
   const session = cookies().get('session')?.value;
   if (!session) return null;
   return await decrypt(session);
