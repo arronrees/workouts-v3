@@ -1,6 +1,6 @@
 'use server';
 
-import { JWT_SECRET, sn } from '@/constants';
+import { JWT_SECRET, api } from '@/constants';
 import { JsonApiResponse } from '@/constants.types';
 import { SignJWT, jwtVerify } from 'jose';
 import { revalidatePath } from 'next/cache';
@@ -78,7 +78,7 @@ export async function signUp(
   }
 
   try {
-    const res = await fetch(sn('/api/auth/signup'), {
+    const res = await fetch(api('/api/auth/signup'), {
       method: 'POST',
       body: JSON.stringify({ user: data }),
       headers: { 'Content-Type': 'application/json' },
@@ -143,7 +143,7 @@ export async function signIn(
   }
 
   try {
-    const res = await fetch(sn('/api/auth/signin'), {
+    const res = await fetch(api('/api/auth/signin'), {
       method: 'POST',
       body: JSON.stringify({ user: data }),
       headers: { 'Content-Type': 'application/json' },
