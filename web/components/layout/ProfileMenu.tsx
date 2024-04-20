@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { User, UserProfile } from '@/constants.types';
+import { User, UserProfile } from '@/constant.types';
 import { logout } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
