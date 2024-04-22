@@ -8,16 +8,8 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth';
 
 export default async function Home() {
-  const session = await getSession();
-
-  if (session) {
-    redirect('/dashboard');
-  }
-
   return (
     <Card
       className='text-center flex items-center justify-center flex-col'
@@ -43,13 +35,13 @@ export default async function Home() {
       <CardContent>
         <div>
           <Button asChild variant='default'>
-            <Link href='/auth/signup'>Register Now</Link>
+            <Link href='/auth/sign-up'>Register Now</Link>
           </Button>
         </div>
 
         <p className='font-light mt-6'>
           Already have an account?{' '}
-          <Link href='/auth/signin' className='font-semibold'>
+          <Link href='/auth/sign-in' className='font-semibold'>
             Sign In
           </Link>
         </p>

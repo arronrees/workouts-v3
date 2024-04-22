@@ -1,15 +1,8 @@
-import { getSession } from '@/lib/auth';
 import ProfileMenu from './ProfileMenu';
 import Navbar from './Navbar';
 
 export default async function Header() {
-  const session = await getSession();
-
-  if (!session) {
-    return null;
-  }
-
-  const { user } = session;
+  const user = {};
 
   return (
     <header className='flex items-center justify-between gap-2 bg-white border-b-[2px] border-b-slate-200 px-6 py-6'>

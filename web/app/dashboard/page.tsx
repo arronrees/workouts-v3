@@ -8,16 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth';
 
 export default async function Dashboard() {
-  const session = await getSession();
-
-  if (!session) {
-    redirect('/auth/signin');
-  }
-
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
       <div className='grid gap-4 md:gap-6 lg:grid-cols-2 xl:grid-cols-3'>

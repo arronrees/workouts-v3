@@ -11,8 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { User, UserProfile } from '@/constant.types';
-import { logout } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 
 export default function ProfileMenu({
   user,
@@ -48,15 +46,7 @@ export default function ProfileMenu({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <form
-            className='w-full'
-            action={async () => {
-              'use server';
-              await logout();
-              redirect('/');
-            }}
-            method='post'
-          >
+          <form className='w-full'>
             <button
               type='submit'
               className='flex items-center w-full cursor-pointer'
