@@ -8,8 +8,16 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
 export default async function Home() {
+  const { userId } = auth();
+
+  if (userId) {
+    redirect('/dashboard');
+  }
+
   return (
     <Card
       className='text-center flex items-center justify-center flex-col'
@@ -35,14 +43,14 @@ export default async function Home() {
       <CardContent>
         <div>
           <Button asChild variant='default'>
-            <Link href='/auth/sign-up'>Register Now</Link>
+            <Link href='/auth/sign-in'>Sign In</Link>
           </Button>
         </div>
 
         <p className='font-light mt-6'>
-          Already have an account?{' '}
-          <Link href='/auth/sign-in' className='font-semibold'>
-            Sign In
+          Don&apos;t have an account?{' '}
+          <Link href='/auth/sign-up' className='font-semibold'>
+            Sign Up
           </Link>
         </p>
       </CardContent>

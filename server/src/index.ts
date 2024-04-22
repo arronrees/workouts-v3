@@ -4,9 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { authRouter } from './routes/auth.routes';
-import { userRouter } from './routes/user.routes';
-import { checkJwtExists } from './middleware/auth.middleware';
 import { __in_production } from './constants';
 
 export const prismaDB = new PrismaClient({
@@ -33,9 +30,6 @@ app.use('*', (req: Request, res: Response, next: NextFunction) => {
 
   next();
 });
-app.use('/api/auth', authRouter);
-app.use(checkJwtExists);
-app.use('/api/user', userRouter);
 
 // 404 handler
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
