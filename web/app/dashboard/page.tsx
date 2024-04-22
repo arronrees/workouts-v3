@@ -8,8 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { api } from '@/constants';
+import { auth } from '@clerk/nextjs/server';
 
 export default async function Dashboard() {
+  const { getToken } = auth();
+
+  const res = await fetch(api('/'), {
+    headers: { Authorization: `Bearer ${await getToken()}` },
+  });
+
+  const data = await res.json();
+
+  console.log(data);
+
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
       <div className='grid gap-4 md:gap-6 lg:grid-cols-2 xl:grid-cols-3'>

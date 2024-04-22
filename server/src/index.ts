@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import { __in_production } from './constants';
 import { webhookController } from './controllers/webhook.controller';
 import bodyParser from 'body-parser';
+import { ClerkExpressRequireAuth, StrictAuthProp } from '@clerk/clerk-sdk-node';
 
 export const prismaDB = new PrismaClient({
   errorFormat: 'pretty',
@@ -29,12 +30,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // routes
-app.use('*', (req: Request, res: Response, next: NextFunction) => {
-  res.locals.user = null;
-  res.locals.userToken = null;
 
-  next();
-});
+declare global {
+  namespace Express {
+    interface Request extends StrictAuthProp {}
+  }
+}
+
+app.use(
+  '*',
+  ClerkExpressRequireAuth({}),
+  (req: Request, res: Response, next: NextFunction) => {
+    next();
+  }
+);
 
 // 404 handler
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
