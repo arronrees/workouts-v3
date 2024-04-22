@@ -5,6 +5,8 @@ import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import { __in_production } from './constants';
+import { webhookController } from './controllers/webhook.controller';
+import bodyParser from 'body-parser';
 
 export const prismaDB = new PrismaClient({
   errorFormat: 'pretty',
@@ -15,13 +17,16 @@ const app = express();
 
 // middleware
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(morgan('dev'));
 
-app.get('/', async (req: Request, res: Response) => {
-  res.send('home');
-});
+app.post(
+  '/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  webhookController
+);
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // routes
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
