@@ -3,6 +3,41 @@ import { CreateWorkoutModel } from '../models/workout.model';
 import { prismaDB } from '..';
 import { JsonApiResponse } from '../constant.types';
 
+export async function getUserWorkoutsController(
+  req: Request,
+  res: Response<JsonApiResponse>,
+  next: NextFunction
+) {
+  try {
+    const { userId } = req.auth;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorised' });
+    }
+
+    const user = await prismaDB.user.findUnique({ where: { clerkId: userId } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
+    const workouts = await prismaDB.workout.findMany({
+      where: { userId: user.id },
+      include: {
+        workoutExercises: {
+          include: {
+            workoutSets: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({ success: true, data: workouts });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function createWorkoutController(
   req: Request,
   res: Response<JsonApiResponse>,

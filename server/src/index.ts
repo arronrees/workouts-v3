@@ -46,8 +46,10 @@ app.use(
 );
 
 // routes
+// these routes are proteched by clerk middleware above
 app.use('/api/exercises', exerciseRouter);
 app.use('/api/workouts', workoutRouter);
+
 // 404 handler
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ error: '404 - Route not found' });
