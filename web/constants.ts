@@ -4,4 +4,15 @@ export const SITE_URL: string = process.env.NEXT_PUBLIC_SITE_URL ?? '';
 
 export const api = (url: string) => `${API_URL}${url}`;
 
-export const JWT_SECRET = process.env.JWT_SECRET ?? '';
+export const muscleGroups: string[] = [
+  'Chest',
+  'Back',
+  'Shoulders',
+  'Triceps',
+  'Biceps',
+  'Abs',
+  'Quads',
+  'Glutes/Hamstrings',
+  'Calves',
+  'Other',
+];

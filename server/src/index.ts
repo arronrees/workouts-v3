@@ -8,6 +8,8 @@ import { __in_production } from './constants';
 import { webhookController } from './controllers/webhook.controller';
 import bodyParser from 'body-parser';
 import { ClerkExpressRequireAuth, StrictAuthProp } from '@clerk/clerk-sdk-node';
+import { exerciseRouter } from './routes/exercise.router';
+import { workoutRouter } from './routes/workout.routes';
 
 export const prismaDB = new PrismaClient({
   errorFormat: 'pretty',
@@ -29,8 +31,6 @@ app.post(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// routes
-
 declare global {
   namespace Express {
     interface Request extends StrictAuthProp {}
@@ -45,6 +45,9 @@ app.use(
   }
 );
 
+// routes
+app.use('/api/exercises', exerciseRouter);
+app.use('/api/workouts', workoutRouter);
 // 404 handler
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ error: '404 - Route not found' });

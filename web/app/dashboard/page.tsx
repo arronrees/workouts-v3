@@ -8,19 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { api } from '@/constants';
 import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
 export default async function Dashboard() {
-  const { getToken } = auth();
+  const { userId } = auth();
 
-  const res = await fetch(api('/'), {
-    headers: { Authorization: `Bearer ${await getToken()}` },
-  });
-
-  const data = await res.json();
-
-  console.log(data);
+  if (!userId) {
+    redirect('/');
+  }
 
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
