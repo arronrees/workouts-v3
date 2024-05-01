@@ -26,7 +26,7 @@ export default function ProfileMenu({ user }: { user: User }) {
               src={user.imageUrl}
               fill
               alt='Profile photo'
-              className='rounded-full object-contain'
+              className='rounded-full object-cover'
             />
           </span>
         </Button>

@@ -27,35 +27,7 @@ import {
 import { api } from '@/constants';
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
-
-type Workout = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  name: string;
-  userId: string;
-  user: string;
-  workoutExercises: WorkoutExercise[];
-};
-
-type WorkoutExercise = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  sortOrder: number;
-  userId: string;
-  exerciseId: string;
-  workoutId: string;
-  workoutSets: WorkoutSet[];
-};
-
-type WorkoutSet = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  reps: number;
-  weight: number;
-};
+import { Workout } from '@/constant.types';
 
 export default async function Workouts() {
   const { getToken } = auth();
