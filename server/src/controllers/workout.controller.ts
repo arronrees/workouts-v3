@@ -86,6 +86,64 @@ export async function getSingleWorkoutController(
   }
 }
 
+export async function getSingleWorkoutWithHistoryController(
+  req: Request,
+  res: Response<JsonApiResponse>,
+  next: NextFunction
+) {
+  try {
+    const { workoutId } = req.params;
+
+    if (!workoutId) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Workout ID is required' });
+    }
+
+    const { userId } = req.auth;
+
+    const user = await prismaDB.user.findUnique({ where: { clerkId: userId } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
+    const workout = await prismaDB.workout.findUnique({
+      where: { id: workoutId },
+      include: {
+        workoutExercises: {
+          orderBy: { sortOrder: 'asc' },
+          include: {
+            workoutSets: {
+              orderBy: { sortOrder: 'asc' },
+            },
+            exercise: true,
+          },
+        },
+        workoutInstances: {
+          include: {
+            workoutExerciseInstances: {
+              include: {
+                workoutSetInstances: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!workout) {
+      return res
+        .status(404)
+        .json({ success: false, error: 'Workout not found' });
+    }
+
+    return res.status(200).json({ success: true, data: { workout } });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function createWorkoutController(
   req: Request,
   res: Response<JsonApiResponse>,

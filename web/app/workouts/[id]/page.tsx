@@ -37,7 +37,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
 import { auth } from '@clerk/nextjs/server';
-import { Workout } from '@/constant.types';
+import { WorkoutWithHistory } from '@/constant.types';
 import { api } from '@/constants';
 
 export default async function SingleWorkout({
@@ -51,7 +51,7 @@ export default async function SingleWorkout({
 
   const { getToken } = auth();
 
-  const res = await fetch(api(`/api/workouts/${params.id}`), {
+  const res = await fetch(api(`/api/workouts/history/${params.id}`), {
     headers: {
       Authorization: `Bearer ${await getToken()}`,
     },
@@ -63,7 +63,7 @@ export default async function SingleWorkout({
     return redirect('/dashboard');
   }
 
-  const workout: Workout = data.data?.workout;
+  const workout: WorkoutWithHistory = data.data?.workout;
 
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
@@ -199,7 +199,50 @@ export default async function SingleWorkout({
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody></TableBody>
+              <TableBody>
+                {workout.workoutInstances &&
+                  workout.workoutInstances.map((workoutInstance) => (
+                    <TableRow key={workoutInstance.id}>
+                      <TableCell>
+                        <div>
+                          <span className='font-medium'>
+                            {new Date(workoutInstance.createdAt).toDateString()}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {workoutInstance.workoutExerciseInstances.reduce(
+                          (acc: number, curr) => {
+                            let val = 0;
+
+                            curr.workoutSetInstances.forEach((set) => {
+                              val += (set.weight ?? 0) * (set.reps ?? 1);
+                            });
+
+                            return acc + val;
+                          },
+                          0
+                        )}
+                        kg
+                      </TableCell>
+                      <TableCell>
+                        <div className='flex items-center justify-end'>
+                          <Button
+                            variant='outline'
+                            className='block ml-auto'
+                            asChild
+                          >
+                            <Link
+                              href={`/workouts/${workoutInstance.workoutId}/history/${workoutInstance.id}`}
+                            >
+                              View
+                            </Link>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
             </Table>
           </CardContent>
         </Card>
