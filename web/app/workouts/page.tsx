@@ -30,7 +30,11 @@ import { auth } from '@clerk/nextjs/server';
 import { Workout, WorkoutHistory } from '@/constant.types';
 
 export default async function Workouts() {
-  const { getToken } = auth();
+  const { getToken, userId } = auth();
+
+  if (!userId) {
+    redirect('/');
+  }
 
   const workoutRes = await fetch(api('/api/workouts'), {
     headers: {
