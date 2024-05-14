@@ -76,3 +76,13 @@ export type WorkoutSetInstance = {
   weight: number;
   sortOrder: number;
 };
+
+export type WorkoutHistory = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  workoutId: string;
+  userId: string;
+  workout: Workout;
+  workoutExerciseInstances: WorkoutExerciseInstance[];
+};

@@ -51,7 +51,7 @@ export default async function SingleWorkout({
 
   const { getToken } = auth();
 
-  const res = await fetch(api(`/api/workouts/history/${params.id}`), {
+  const res = await fetch(api(`/api/workouts/${params.id}/history`), {
     headers: {
       Authorization: `Bearer ${await getToken()}`,
     },
