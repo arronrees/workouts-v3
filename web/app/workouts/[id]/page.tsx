@@ -65,8 +65,6 @@ export default async function SingleWorkout({
 
   const workout: Workout = data.data?.workout;
 
-  const workoutHistory = [];
-
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
       <Breadcrumb>
@@ -201,54 +199,7 @@ export default async function SingleWorkout({
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {workoutHistory &&
-                  workoutHistory.map((workout) => (
-                    <TableRow key={workout.id}>
-                      <TableCell>
-                        <div>
-                          <span className='font-medium'>
-                            {new Date(workout.created_at).toDateString()}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {workout.workout_exercise_instance.reduce(
-                          (acc: number, curr: any) => {
-                            let val = 0;
-
-                            curr.workout_set_instance.forEach(
-                              (
-                                set: Database['public']['Tables']['workout_set_instance']['Row']
-                              ) => {
-                                val += (set.weight ?? 0) * (set.reps ?? 1);
-                              }
-                            );
-
-                            return acc + val;
-                          },
-                          0
-                        )}
-                        kg
-                      </TableCell>
-                      <TableCell>
-                        <div className='flex items-center justify-end'>
-                          <Button
-                            variant='outline'
-                            className='block ml-auto'
-                            asChild
-                          >
-                            <Link
-                              href={`/workouts/${workout.workout_id}/history/${workout.id}`}
-                            >
-                              View
-                            </Link>
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
+              <TableBody></TableBody>
             </Table>
           </CardContent>
         </Card>

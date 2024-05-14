@@ -35,4 +35,5 @@ export type WorkoutSet = {
   updatedAt: Date;
   reps: number;
   weight: number;
+  sortOrder: number;
 };

@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateWorkoutModel } from '../models/workout.model';
+import {
+  CreateWorkoutModel,
+  RecordWorkoutModel,
+} from '../models/workout.model';
 import { prismaDB } from '..';
 import { JsonApiResponse } from '../constant.types';
 
@@ -40,9 +43,9 @@ export async function getSingleWorkoutController(
   next: NextFunction
 ) {
   try {
-    const { id } = req.params;
+    const { workoutId } = req.params;
 
-    if (!id) {
+    if (!workoutId) {
       return res
         .status(400)
         .json({ success: false, error: 'Workout ID is required' });
@@ -57,11 +60,14 @@ export async function getSingleWorkoutController(
     }
 
     const workout = await prismaDB.workout.findUnique({
-      where: { id: id },
+      where: { id: workoutId },
       include: {
         workoutExercises: {
+          orderBy: { sortOrder: 'asc' },
           include: {
-            workoutSets: true,
+            workoutSets: {
+              orderBy: { sortOrder: 'asc' },
+            },
             exercise: true,
           },
         },
@@ -118,9 +124,10 @@ export async function createWorkoutController(
               },
             },
             workoutSets: {
-              create: exercise.sets.map((set) => ({
+              create: exercise.sets.map((set, index) => ({
                 reps: set.reps ?? 0,
                 weight: set.weight ?? 0,
+                sortOrder: index + 1,
                 user: {
                   connect: {
                     id: user.id,
@@ -140,6 +147,105 @@ export async function createWorkoutController(
     }
 
     return res.status(200).json({ success: true, data: newWorkout });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function recordWorkoutController(
+  req: Request,
+  res: Response<JsonApiResponse>,
+  next: NextFunction
+) {
+  try {
+    const { userId } = req.auth;
+    const { workoutId } = req.params;
+
+    if (!workoutId) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Workout ID is required' });
+    }
+
+    const { body: workout }: { body: RecordWorkoutModel } = req;
+
+    const user = await prismaDB.user.findUnique({ where: { clerkId: userId } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
+    const foundWorkout = await prismaDB.workout.findUnique({
+      where: {
+        id: workoutId,
+      },
+    });
+
+    if (!foundWorkout) {
+      return res
+        .status(404)
+        .json({ success: false, error: 'Workout not found' });
+    }
+
+    const workoutRecord = await prismaDB.workoutInstance.create({
+      data: {
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        workout: {
+          connect: {
+            id: workoutId,
+          },
+        },
+        workoutExerciseInstances: {
+          create: workout.exerciseInstances.map((exerciseInstance) => ({
+            exercise: {
+              connect: {
+                id: exerciseInstance.exerciseId,
+              },
+            },
+            workoutExercise: {
+              connect: {
+                id: exerciseInstance.workoutExerciseId,
+              },
+            },
+            user: {
+              connect: {
+                id: user.id,
+              },
+            },
+            sortOrder: exerciseInstance.sortOrder,
+            workoutSetInstances: {
+              create: exerciseInstance.sets.map((set, index) => ({
+                reps: set.reps ?? 0,
+                weight: set.weight ?? 0,
+                sortOrder: index + 1,
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+                workoutExercise: {
+                  connect: {
+                    id: exerciseInstance.workoutExerciseId,
+                  },
+                },
+              })),
+            },
+          })),
+        },
+      },
+    });
+
+    if (!workoutRecord) {
+      return res
+        .status(500)
+        .json({ success: false, error: 'Failed to record workout' });
+    }
+
+    return res.status(200).json({ success: true, data: workoutRecord });
   } catch (err) {
     next(err);
   }

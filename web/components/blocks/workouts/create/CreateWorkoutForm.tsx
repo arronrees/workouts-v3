@@ -135,7 +135,10 @@ export default function CreateWorkoutForm() {
       return;
     }
 
+    setError(null);
+    setIsLoading(true);
     router.push('/workouts');
+    return;
   }
 
   return (
