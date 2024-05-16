@@ -290,9 +290,12 @@ function Sets({ setNewWorkout, exerciseInstance }: SetsProps) {
                     onChange={(e) => {
                       e.preventDefault();
 
-                      if (e.target.value) {
+                      if (e.target.value && parseInt(e.target.value)) {
                         updateSetReps(parseInt(e.target.value), set.id);
+                        return;
                       }
+
+                      updateSetReps(0, set.id);
                     }}
                     autoFocus
                   />
@@ -304,9 +307,12 @@ function Sets({ setNewWorkout, exerciseInstance }: SetsProps) {
                     onChange={(e) => {
                       e.preventDefault();
 
-                      if (e.target.value) {
-                        updateSetWeight(parseInt(e.target.value), set.id);
+                      if (e.target.value && parseFloat(e.target.value)) {
+                        updateSetWeight(parseFloat(e.target.value), set.id);
+                        return;
                       }
+
+                      updateSetWeight(0, set.id);
                     }}
                   />
                   <Button

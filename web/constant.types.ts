@@ -53,6 +53,13 @@ export type WorkoutInstance = {
   updatedAt: Date;
   userId: string;
   workoutId: string;
+  workout: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    name: string;
+    userId: string;
+  };
   workoutExerciseInstances: WorkoutExerciseInstance[];
 };
 

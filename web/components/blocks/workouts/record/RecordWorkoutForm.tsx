@@ -273,6 +273,7 @@ function Sets({ sets, setNewWorkout, exerciseInstance }: SetsProps) {
                 id: randomstring.generate(8),
                 reps: 0,
                 weight: 0,
+                sortOrder: exercise.sets.length + 1,
               },
             ],
           };
@@ -329,7 +330,7 @@ function Set({ set, index, setNewWorkout, exerciseInstance }: SetProps) {
         if (exercise.id === exerciseInstance.id) {
           return {
             ...exercise,
-            workout_sets: exercise.sets.map((set) => {
+            sets: exercise.sets.map((set) => {
               if (set.id === id) {
                 return {
                   ...set,
@@ -354,7 +355,7 @@ function Set({ set, index, setNewWorkout, exerciseInstance }: SetProps) {
         if (exercise.id === exerciseInstance.id) {
           return {
             ...exercise,
-            workout_sets: exercise.sets.map((set) => {
+            sets: exercise.sets.map((set) => {
               if (set.id === id) {
                 return {
                   ...set,
@@ -394,28 +395,34 @@ function Set({ set, index, setNewWorkout, exerciseInstance }: SetProps) {
       <div className='flex gap-1'>
         <Input
           type='number'
-          placeholder={`Target: ${targetReps}`}
+          placeholder={`${targetReps}`}
           min={0}
           onChange={(e) => {
             e.preventDefault();
 
-            if (e.target.value) {
+            if (e.target.value && parseInt(e.target.value)) {
               updateSetReps(parseInt(e.target.value), set.id);
+              return;
             }
+
+            updateSetReps(0, set.id);
           }}
           autoFocus
         />
         <Input
           type='number'
-          placeholder={`Target: ${targetWeight}(kg)`}
+          placeholder={`${targetWeight}kg`}
           min={0}
           step={0.5}
           onChange={(e) => {
             e.preventDefault();
 
-            if (e.target.value) {
-              updateSetWeight(parseInt(e.target.value), set.id);
+            if (e.target.value && parseFloat(e.target.value)) {
+              updateSetWeight(parseFloat(e.target.value), set.id);
+              return;
             }
+
+            updateSetWeight(0, set.id);
           }}
         />
         <Button

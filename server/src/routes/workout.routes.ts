@@ -10,6 +10,7 @@ import {
   getUserWorkoutsController,
   recordWorkoutController,
   getWorkoutHistoryController,
+  getSingleInstanceController,
 } from '../controllers/workout.controller';
 
 export const workoutRouter = Router();
@@ -21,6 +22,11 @@ workoutRouter.get('/history', getWorkoutHistoryController);
 workoutRouter.get('/:workoutId', getSingleWorkoutController);
 
 workoutRouter.get('/:workoutId/history', getSingleWorkoutWithHistoryController);
+
+workoutRouter.get(
+  '/:workoutId/history/:instanceId',
+  getSingleInstanceController
+);
 
 workoutRouter.post('/', checkCreateWorkoutObjectValid, createWorkoutController);
 
