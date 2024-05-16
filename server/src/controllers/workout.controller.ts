@@ -168,6 +168,7 @@ export async function getWorkoutHistoryController(
           },
         },
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     return res.status(200).json({ success: true, data: workoutHistory });

@@ -28,7 +28,6 @@ import {
 import { api } from '@/constants';
 import { auth } from '@clerk/nextjs/server';
 import { WorkoutInstance } from '@/constant.types';
-import ClientLogger from '@/components/ClientLogger';
 
 export default async function WorkoutInstancePage({
   params,
@@ -109,7 +108,6 @@ export default async function WorkoutInstancePage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              <ClientLogger item={workoutInstance} />
               {workoutInstance.workoutExerciseInstances.map((exercise) => (
                 <Fragment key={exercise.id}>
                   {exercise.workoutSetInstances.map((set, index) => (

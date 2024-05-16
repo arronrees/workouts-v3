@@ -143,6 +143,7 @@ export default async function Workouts() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Weight Lifted</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
@@ -154,9 +155,12 @@ export default async function Workouts() {
                       <TableCell>
                         <div>
                           <span className='font-medium'>
-                            {new Date(workoutInstance.createdAt).toDateString()}
+                            {workoutInstance.workout.name}
                           </span>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(workoutInstance.createdAt).toDateString()}
                       </TableCell>
                       <TableCell>
                         {workoutInstance.workoutExerciseInstances.reduce(

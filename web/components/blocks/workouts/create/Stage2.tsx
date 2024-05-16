@@ -262,10 +262,7 @@ function Sets({ setNewWorkout, exerciseInstance }: SetsProps) {
         if (exercise.id === exerciseInstance.id) {
           return {
             ...exercise,
-            sets: exercise.sets.filter((set) => {
-              console.log(set.id, id);
-              return set.id !== id;
-            }),
+            sets: exercise.sets.filter((set) => set.id !== id),
           };
         }
 
