@@ -59,6 +59,7 @@ export async function getUserExercises(
     const currentWeekExercises =
       await prismaDB.workoutExerciseInstance.findMany({
         where: {
+          userId: user.id,
           createdAt: {
             gte: currentWeekStart,
             lt: currentWeekEnd,
@@ -80,6 +81,7 @@ export async function getUserExercises(
     const previousWeekExercises =
       await prismaDB.workoutExerciseInstance.findMany({
         where: {
+          userId: user.id,
           createdAt: {
             gte: previousWeekStart,
             lt: previousWeekEnd,
@@ -94,6 +96,53 @@ export async function getUserExercises(
       success: true,
       data: { exercises, previousWeekExercises, currentWeekExercises },
     });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getSingleWorkoutExercise(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { workoutExerciseId } = req.params;
+
+    const { userId } = req.auth;
+
+    const user = await prismaDB.user.findUnique({ where: { clerkId: userId } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
+    const workoutExercise = await prismaDB.workoutExercise.findUnique({
+      where: { id: workoutExerciseId, userId: user.id },
+      include: {
+        exercise: true,
+        workoutExerciseInstances: {
+          include: {
+            workoutInstance: {
+              select: {
+                workout: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+            workoutSetInstances: {
+              orderBy: {
+                sortOrder: 'asc',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({ success: true, data: workoutExercise });
   } catch (err) {
     next(err);
   }

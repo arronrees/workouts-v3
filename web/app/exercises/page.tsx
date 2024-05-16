@@ -78,7 +78,7 @@ type WeekExercise = {
   }[];
 };
 
-export default async function Workouts() {
+export default async function Exercises() {
   const { getToken, userId } = auth();
 
   if (!userId) {
