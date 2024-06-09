@@ -65,6 +65,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     .json({ error: __in_production ? '500 - Server error' : err.message });
 });
 
-app.listen(4000, () => {
-  console.log('Server running on port 4000');
+prismaDB.$connect().then(() => {
+  app.listen(4000, () => {
+    console.log('Server running on port 4000');
+  });
 });

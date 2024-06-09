@@ -11,6 +11,7 @@ import {
   recordWorkoutController,
   getWorkoutHistoryController,
   getSingleInstanceController,
+  getAllWorkoutSetsController,
 } from '../controllers/workout.controller';
 
 export const workoutRouter = Router();
@@ -18,6 +19,8 @@ export const workoutRouter = Router();
 workoutRouter.get('/', getUserWorkoutsController);
 
 workoutRouter.get('/history', getWorkoutHistoryController);
+
+workoutRouter.get('/sets', getAllWorkoutSetsController);
 
 workoutRouter.get('/:workoutId', getSingleWorkoutController);
 
