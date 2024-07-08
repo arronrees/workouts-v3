@@ -21,7 +21,6 @@ import {
 import { FavouriteExercise, Workout, WorkoutHistory } from '@/constant.types';
 import { api } from '@/constants';
 import DashboardHeader from '@/components/blocks/dashboard/DashboardHeader';
-import ClientLogger from '@/components/ClientLogger';
 
 export default async function Dashboard() {
   const { userId, getToken } = auth();
@@ -75,7 +74,6 @@ export default async function Dashboard() {
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
       <DashboardHeader />
-      <ClientLogger item={favourites} />
       <div className='grid gap-4 md:gap-6 lg:grid-cols-2 xl:grid-cols-3'>
         <Card className='xl:col-span-2'>
           <CardHeader className='flex flex-row items-center'>
