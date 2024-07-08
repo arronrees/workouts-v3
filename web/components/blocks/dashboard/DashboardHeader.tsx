@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { WorkoutSetInstance } from '@/constant.types';
 import { api } from '@/constants';
 import { auth } from '@clerk/nextjs/server';
-import { Dumbbell, Weight } from 'lucide-react';
+import { Dumbbell, Repeat2, Weight } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export default async function DashboardHeader() {
@@ -49,12 +49,25 @@ export default async function DashboardHeader() {
       </Card>
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-sm font-medium'>Sets Performed</CardTitle>
+          <CardTitle className='text-sm font-medium'>Sets Completed</CardTitle>
           <Dumbbell className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>
             {new Intl.NumberFormat('en-gb', {}).format(sets.length)}
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>Reps Performed</CardTitle>
+          <Repeat2 className='h-4 w-4 text-muted-foreground' />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold'>
+            {new Intl.NumberFormat('en-gb', {}).format(
+              sets.reduce((acc, curr) => acc + curr.reps, 0)
+            )}
           </div>
         </CardContent>
       </Card>
