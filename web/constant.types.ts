@@ -93,3 +93,17 @@ export type WorkoutHistory = {
   workout: Workout;
   workoutExerciseInstances: WorkoutExerciseInstance[];
 };
+
+export type FavouriteExercise = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  sortOrder: number;
+  userId: string;
+  exerciseId: string;
+  workoutId: string;
+  exercise: Exercise;
+  _count: {
+    workoutSetInstances: number;
+  };
+};

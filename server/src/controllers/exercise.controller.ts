@@ -18,7 +18,7 @@ export async function getAllExercises(
 
 export async function getUserExercises(
   req: Request,
-  res: Response,
+  res: Response<JsonApiResponse>,
   next: NextFunction
 ) {
   try {
@@ -96,6 +96,44 @@ export async function getUserExercises(
       success: true,
       data: { exercises, previousWeekExercises, currentWeekExercises },
     });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getFavouriteExercises(
+  req: Request,
+  res: Response<JsonApiResponse>,
+  next: NextFunction
+) {
+  try {
+    const { userId } = req.auth;
+
+    const user = await prismaDB.user.findUnique({ where: { clerkId: userId } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
+    const favouriteExercises = await prismaDB.workoutExercise.findMany({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        _count: {
+          select: { workoutSetInstances: true },
+        },
+        exercise: true,
+      },
+      orderBy: {
+        workoutSetInstances: {
+          _count: 'desc',
+        },
+      },
+      take: 6,
+    });
+
+    return res.status(200).json({ success: true, data: favouriteExercises });
   } catch (err) {
     next(err);
   }

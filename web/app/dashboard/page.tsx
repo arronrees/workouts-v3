@@ -18,9 +18,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Workout, WorkoutHistory } from '@/constant.types';
+import { FavouriteExercise, Workout, WorkoutHistory } from '@/constant.types';
 import { api } from '@/constants';
 import DashboardHeader from '@/components/blocks/dashboard/DashboardHeader';
+import ClientLogger from '@/components/ClientLogger';
 
 export default async function Dashboard() {
   const { userId, getToken } = auth();
@@ -37,11 +38,11 @@ export default async function Dashboard() {
 
   const workoutData = await workoutRes.json();
 
-  if (!workoutRes.ok) {
-    return redirect('/dashboard');
-  }
+  let workouts: Workout[] | null = null;
 
-  const workouts: Workout[] = workoutData.data;
+  if (workoutRes.ok) {
+    workouts = workoutData.data;
+  }
 
   const historyRes = await fetch(api('/api/workouts/history'), {
     headers: {
@@ -51,15 +52,30 @@ export default async function Dashboard() {
 
   const historyData = await historyRes.json();
 
-  if (!historyRes.ok) {
-    return redirect('/dashboard');
+  let history: WorkoutHistory[] | null = null;
+
+  if (historyRes.ok) {
+    history = historyData.data;
   }
 
-  const history: WorkoutHistory[] = historyData.data;
+  const favouritesRes = await fetch(api('/api/exercises/favourites'), {
+    headers: {
+      Authorization: `Bearer ${await getToken()}`,
+    },
+  });
+
+  const favouritesData = await favouritesRes.json();
+
+  let favourites: FavouriteExercise[] | null = null;
+
+  if (favouritesRes) {
+    favourites = favouritesData.data;
+  }
 
   return (
     <div className='flex flex-1 flex-col gap-4 md:gap-6'>
       <DashboardHeader />
+      <ClientLogger item={favourites} />
       <div className='grid gap-4 md:gap-6 lg:grid-cols-2 xl:grid-cols-3'>
         <Card className='xl:col-span-2'>
           <CardHeader className='flex flex-row items-center'>
@@ -183,7 +199,35 @@ export default async function Dashboard() {
           <CardHeader>
             <CardTitle>Favourite Exercises</CardTitle>
           </CardHeader>
-          <CardContent className='grid gap-6'></CardContent>
+          <CardContent className='grid gap-6'>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Sets Completed</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {favourites &&
+                  favourites.map((workoutExercise) => (
+                    <TableRow key={workoutExercise.id}>
+                      <TableCell>
+                        <Link
+                          href={`/exercises/${workoutExercise.exercise.id}`}
+                        >
+                          <div className='font-medium'>
+                            {workoutExercise.exercise.name}
+                          </div>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {workoutExercise._count.workoutSetInstances}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </CardContent>
         </Card>
       </div>
     </div>

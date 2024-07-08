@@ -1,4 +1,3 @@
-import ClientLogger from '@/components/ClientLogger';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { WorkoutSetInstance } from '@/constant.types';
 import { api } from '@/constants';
@@ -28,7 +27,6 @@ export default async function DashboardHeader() {
 
   return (
     <div className='grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3'>
-      <ClientLogger item={sets} />
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>
